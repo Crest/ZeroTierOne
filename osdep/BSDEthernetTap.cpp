@@ -119,7 +119,7 @@ BSDEthernetTap::BSDEthernetTap(
 		if (std::find(devFiles.begin(),devFiles.end(),std::string(tmpdevname)) == devFiles.end()) {
 			long cpid = (long)vfork();
 			if (cpid == 0) {
-				::execl("/sbin/ifconfig","/sbin/ifconfig",tmpdevname,"create",(const char *)0);
+				::execl("/usr/local/bin/sudo","/usr/local/bin/sudo","/sbin/ifconfig",tmpdevname,"create",(const char *)0);
 				::_exit(-1);
 			} else if (cpid > 0) {
 				int exitcode = -1;
@@ -130,7 +130,7 @@ BSDEthernetTap::BSDEthernetTap(
 			if (!stat(devpath,&stattmp)) {
 				cpid = (long)vfork();
 				if (cpid == 0) {
-					::execl("/sbin/ifconfig","/sbin/ifconfig",tmpdevname,"name",_dev.c_str(),(const char *)0);
+					::execl("/usr/local/bin/sudo","/usr/local/bin/sudo","/sbin/ifconfig",tmpdevname,"name",_dev.c_str(),(const char *)0);
 					::_exit(-1);
 				} else if (cpid > 0) {
 					int exitcode = -1;
@@ -176,7 +176,7 @@ BSDEthernetTap::BSDEthernetTap(
 	OSUtils::ztsnprintf(metstr,sizeof(metstr),"%u",_metric);
 	long cpid = (long)vfork();
 	if (cpid == 0) {
-		::execl("/sbin/ifconfig","/sbin/ifconfig",_dev.c_str(),"lladdr",ethaddr,"mtu",mtustr,"metric",metstr,"up",(const char *)0);
+		::execl("/usr/local/bin/sudo","/usr/local/bin/sudo","/sbin/ifconfig",_dev.c_str(),"lladdr",ethaddr,"mtu",mtustr,"metric",metstr,"up",(const char *)0);
 		::_exit(-1);
 	} else if (cpid > 0) {
 		int exitcode = -1;
@@ -205,7 +205,7 @@ BSDEthernetTap::~BSDEthernetTap()
 
 	long cpid = (long)vfork();
 	if (cpid == 0) {
-		::execl("/sbin/ifconfig","/sbin/ifconfig",_dev.c_str(),"destroy",(const char *)0);
+		::execl("/usr/local/bin/sudo","/usr/local/bin/sudo","/sbin/ifconfig",_dev.c_str(),"destroy",(const char *)0);
 		::_exit(-1);
 	} else if (cpid > 0) {
 		int exitcode = -1;
@@ -228,7 +228,7 @@ static bool ___removeIp(const std::string &_dev,const InetAddress &ip)
 	long cpid = (long)vfork();
 	if (cpid == 0) {
 		char ipbuf[64];
-		execl("/sbin/ifconfig","/sbin/ifconfig",_dev.c_str(),"inet",ip.toIpString(ipbuf),"-alias",(const char *)0);
+		execl("/usr/local/bin/sudo","/usr/local/bin/sudo","/sbin/ifconfig",_dev.c_str(),"inet",ip.toIpString(ipbuf),"-alias",(const char *)0);
 		_exit(-1);
 	} else if (cpid > 0) {
 		int exitcode = -1;
@@ -258,7 +258,7 @@ bool BSDEthernetTap::addIp(const InetAddress &ip)
 	long cpid = (long)vfork();
 	if (cpid == 0) {
 		char tmp[128];
-		::execl("/sbin/ifconfig","/sbin/ifconfig",_dev.c_str(),ip.isV4() ? "inet" : "inet6",ip.toString(tmp),"alias",(const char *)0);
+		::execl("/usr/local/bin/sudo","/usr/local/bin/sudo","/sbin/ifconfig",_dev.c_str(),ip.isV4() ? "inet" : "inet6",ip.toString(tmp),"alias",(const char *)0);
 		::_exit(-1);
 	} else if (cpid > 0) {
 		int exitcode = -1;
@@ -388,7 +388,7 @@ void BSDEthernetTap::setMtu(unsigned int mtu)
 		if (cpid == 0) {
 			char tmp[64];
 			OSUtils::ztsnprintf(tmp,sizeof(tmp),"%u",mtu);
-			execl("/sbin/ifconfig","/sbin/ifconfig",_dev.c_str(),"mtu",tmp,(const char *)0);
+			execl("/usr/local/bin/sudo","/usr/local/bin/sudo","/sbin/ifconfig",_dev.c_str(),"mtu",tmp,(const char *)0);
 			_exit(-1);
 		} else if (cpid > 0) {
 			int exitcode = -1;
