@@ -92,7 +92,6 @@ Example:
 | v6AssignMode          | object        | IPv6 management and assign options (see below)    | YES      |
 | mtu                   | integer       | Network MTU (default: 2800)                       | YES      |
 | multicastLimit        | integer       | Maximum recipients for a multicast packet         | YES      |
-| creationTime          | integer       | Time network was first created                    | no       |
 | revision              | integer       | Network config revision counter                   | no       |
 | routes                | array[object] | Managed IPv4 and IPv6 routes; see below           | YES      |
 | ipAssignmentPools     | array[object] | IP auto-assign ranges; see below                  | YES      |
@@ -134,6 +133,26 @@ IPv6 ranges work just like IPv4 ranges and look like this:
 (You can POST a shortened-form IPv6 address but the API will always report back un-shortened canonical form addresses.)
 
 That defines a range within network `fd00:feed:feed:beef::/64` that contains up to 2^64 addresses. If an IPv6 range is large enough, the controller will assign addresses by placing each member's device ID into the address in a manner similar to the RFC4193 and 6PLANE modes. Otherwise it will assign addresses at random.
+
+**Managed Route object format:**
+
+| Field                 | Type          | Description                                       |
+| --------------------- | ------------- | ------------------------------------------------- |
+| target                | string        | Subnet in CIDR notation                           |
+| via                   | string/null   | Next hop router IP address                        |
+
+Managed Route objects look like this:
+
+      {
+        "target": "10.147.20.0/24"
+      }
+
+or 
+
+      {
+        "target": "192.168.168.0/24",
+        "via": "10.147.20.1"
+      }
 
 **Rule object format:**
 
